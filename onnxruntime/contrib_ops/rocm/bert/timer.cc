@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+#include <iostream>
+#include <cstdlib>
 #include "contrib_ops/rocm/bert/timer.h"
 
 #define HIP_CHECKED_CALL(expr)                                                             \
