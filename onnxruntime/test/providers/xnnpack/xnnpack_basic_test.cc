@@ -211,7 +211,7 @@ TEST(XnnpackEP, TestAveragePool) {
     Node& pool_node = builder.AddNode("AveragePool", {input_arg}, {output_arg});
     std::vector<int64_t> pads((input_shape.size() - 2) * 2, 1);
     pool_node.AddAttribute("pads", pads);
-    std::vector<int64_t> kernel_shape(input_shape.size(), 3);
+    std::vector<int64_t> kernel_shape(input_shape.size() - 2, 3);
     pool_node.AddAttribute("kernel_shape", kernel_shape);
   };
   RunModelTest(modelBuilder, "xnnpack_test_graph_averagepool",
@@ -224,7 +224,7 @@ TEST(XnnpackEP, TestAveragePool) {
 TEST(XnnpackEP, TestQDQAveragePool) {
   RunModelTest(BuildQDQAveragePoolTestCase<uint8_t /* InputType */,
                                               uint8_t /* OutputType */>(
-                      {1, 2, 3, 3} /* input_shape */),
+                      {1, 1, 30, 30} /* input_shape */, static_cast<int64_t>(1)),
                   "xnnpack_qdq_test_graph_averagepool",
                   {
                       ExpectedEPNodeAssignment::Some,

@@ -91,8 +91,9 @@ static bool IsQuantAvgPoolSupported(const NodeUnit& node_unit, const GraphViewer
 bool AveragePool::IsAveragePoolOnnxNodeSupported(const onnxruntime::NodeUnit& node_unit,
                                                  const onnxruntime::GraphViewer& graph) {
   bool supported = false;
+  auto qtype = GetQuantizedOpType(node_unit);
   // we check quant-conditions first, if this quant-node is not supported, return directly.
-  if (IsQuantizedAvgPool(GetQuantizedOpType(node_unit)) && IsQuantAvgPoolSupported(node_unit, graph) == false) {
+  if (IsQuantizedAvgPool(qtype) && IsQuantAvgPoolSupported(node_unit, graph) == false) {
     return supported;
   }
   // share the common checks here for fp32 and quant-op
@@ -105,6 +106,13 @@ bool AveragePool::IsAveragePoolOnnxNodeSupported(const onnxruntime::NodeUnit& no
     // we only support 2D (4 dims with batch and channel)
     const auto* x_shape = x_arg.Shape();
     if (!x_shape || x_shape->dim_size() != 4) {
+      break;
+    }
+    // we only support float and u8 currently
+    const auto* x_type = x_arg.TypeAsProto();
+    if (x_type == nullptr ||
+        (x_type->tensor_type().elem_type() != ONNX_NAMESPACE::TensorProto_DataType_FLOAT &&
+         x_type->tensor_type().elem_type() != ONNX_NAMESPACE::TensorProto_DataType_UINT8)) {
       break;
     }
 
@@ -135,8 +143,10 @@ bool AveragePool::IsAveragePoolOnnxNodeSupported(const onnxruntime::NodeUnit& no
       // XNNPack doesn't support 1x1 average pool.
       break;
     }
-
-    if (pool_attrs.count_include_pad) {
+    // a weird design in xnnpack, fp32 should have count_include_pad false, 
+    // while quant should have count_include_pad true 
+    bool cp_in_op = pool_attrs.count_include_pad ^ IsQuantizedAvgPool(qtype);
+    if (cp_in_op) {
       break;
     }
 

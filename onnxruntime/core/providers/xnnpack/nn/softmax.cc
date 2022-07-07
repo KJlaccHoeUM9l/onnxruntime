@@ -48,6 +48,13 @@ bool Softmax::IsSoftmaxOnnxNodeSupported(const onnxruntime::NodeUnit& node_unit,
     if (!x_shape || !x_shape->dim(x_shape->dim_size() - 1).has_dim_value()) {
       break;
     }
+    // we only support float and u8 currently
+    const auto* x_type = x_arg.TypeAsProto();
+    if (x_type == nullptr ||
+        (x_type->tensor_type().elem_type() != ONNX_NAMESPACE::TensorProto_DataType_FLOAT &&
+         x_type->tensor_type().elem_type() != ONNX_NAMESPACE::TensorProto_DataType_UINT8)) {
+      break;
+    }
     onnxruntime::ProtoHelperNodeContext nc(node_unit.GetNode());
     onnxruntime::OpNodeProtoHelper info(&nc);
 

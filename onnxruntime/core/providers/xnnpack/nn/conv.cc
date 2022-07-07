@@ -311,7 +311,14 @@ bool Conv::IsConvOnnxNodeSupported(const NodeUnit& node_unit, const GraphViewer&
     if (!x_shape || x_shape->dim_size() != 4) {
       break;
     }
-
+    // we only support float and u8 currently
+    const auto* x_type = x_arg.TypeAsProto();
+    if (x_type == nullptr ||
+        (x_type->tensor_type().elem_type() != ONNX_NAMESPACE::TensorProto_DataType_FLOAT &&
+         x_type->tensor_type().elem_type() != ONNX_NAMESPACE::TensorProto_DataType_UINT8 &&
+         x_type->tensor_type().elem_type() != ONNX_NAMESPACE::TensorProto_DataType_INT8)) {
+      break;
+    }
     // require C, H, W to be known so we can construct the xnnpack kernel prior to Compute
     if (!x_shape->dim(1).has_dim_value() ||
         !x_shape->dim(2).has_dim_value() ||
