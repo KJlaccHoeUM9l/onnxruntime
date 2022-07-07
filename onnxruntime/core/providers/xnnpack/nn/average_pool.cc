@@ -211,21 +211,21 @@ Status AveragePool::Compute(OpKernelContext* context) const {
   // set the N dim to the correct value
   TensorShapeVector output_dims{output_dims_};
   output_dims[0] = N;
-  Tensor* Y = context->Output(0, output_dims);
+  Tensor& Y = *context->Output(0, output_dims);
 
   // empty input
-  if (Y->Shape().Size() == 0) {
+  if (Y.Shape().Size() == 0) {
     return Status::OK();
   }
 
   xnn_status status = xnn_status_invalid_state;
   if (avgpool_type_ == OpComputeType::op_compute_type_fp32) {
     status = xnn_setup_average_pooling2d_nhwc_f32(op0_.get(), N, H, W,
-                                                  X.Data<float>(), Y->MutableData<float>(),
+                                                  X.Data<float>(), Y.MutableData<float>(),
                                                   nullptr /*threadpool */);  // TBD: how to handle threading
   } else if (avgpool_type_ == OpComputeType::op_compute_type_qu8) {
     status = xnn_setup_average_pooling2d_nhwc_qu8(op0_.get(), N, H, W,
-                                                  X.Data<uint8_t>(), Y->MutableData<uint8_t>(),
+                                                  X.Data<uint8_t>(), Y.MutableData<uint8_t>(),
                                                   nullptr /*threadpool */);  // TBD: how to handle threading
   }
 

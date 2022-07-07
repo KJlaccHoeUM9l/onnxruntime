@@ -104,7 +104,7 @@ bool GetType(const NodeArg& node_arg, int32_t& type);
 bool GetShape(const NodeArg& node_arg, Shape& shape);
 bool ParseQuantParamFromInfoByOrder(const OpKernelInfo& info,
                                     const InputTensorOrder& scale_zp_indexs,
-                                    QuantParam& quant_param_);
+                                    QuantParam& quant_param);
 
 bool IsQuantizedConv(QuantizedOpType quant_op_type);
 

@@ -131,7 +131,8 @@ static Status GetCapabilityForEP(Graph& graph, KernelRegistryManager& kernel_reg
     // It is possible some new nodes are introduced during transformation. These nodes can be either existing nodes
     // which are reconstructed to update domain or completely new nodes which are necessary for layout transformation.
     // Therefore, we re-run GetCapability so that these new nodes can be processed by this EP.
-    if (modified) {
+    // another reason we need to re-run GetCapability is to do the QDQ group fusion and node fusion like, op+relu.
+    if (modified || capabilities.size()) {
       const NodeIndex end_node = graph.MaxNodeIndex();
 
       capabilities.clear();

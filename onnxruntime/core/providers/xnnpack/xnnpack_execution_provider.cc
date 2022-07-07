@@ -196,7 +196,7 @@ std::vector<std::unique_ptr<ComputeCapability>> XnnpackExecutionProvider::GetCap
         for (const auto& node_o : node_unit.GetQNodes()) {
           sub_graph->nodes.push_back(node_o->Index());
         }
-        sub_graph->SetMetaDef(std::move(FuseQDQGroup(node_unit)));
+        sub_graph->SetMetaDef(FuseQDQGroup(node_unit));
         sub_graph->use_existing_schema = true;
         capabilities.push_back(std::make_unique<ComputeCapability>(std::move(sub_graph)));
         node_to_compute_capability.insert({&node_unit.GetNode(), capabilities.back().get()});

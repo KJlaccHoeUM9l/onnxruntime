@@ -383,7 +383,7 @@ TensorQuantType GetTensorQuantType(const onnxruntime::NodeUnit& node_unit, int32
 
 bool ParseQuantParamFromInfoByOrder(const OpKernelInfo& info,
                                     const InputTensorOrder& scale_zp_indexs,
-                                    QuantParam& quant_param_) {
+                                    QuantParam& quant_param) {
   // quant param, which used in create xnnpack_conv_kernel
   // we do not check the error here, as we have done it in op_checker
   // if this input tensor is not exists, its value is -1;
@@ -392,9 +392,11 @@ bool ParseQuantParamFromInfoByOrder(const OpKernelInfo& info,
     info.TryGetConstantInput(scale_zp_indexs.X_ZERO_POINT, &X_zero_point);
 
     if (X_zero_point == nullptr) {
-      quant_param_.X_zero_point_value = 0;
+      quant_param.X_zero_point_value = 0;
     } else {
-      quant_param_.X_zero_point_value = *(X_zero_point->template Data<uint8_t>());
+      // take all data as uint8, so we can easily parse zero-point and store in out data structure.
+      // we will re-cast it to the real datatype (u8 or s8) in the right place
+      quant_param.X_zero_point_value = *reinterpret_cast<const uint8_t*>(X_zero_point->DataRaw());
     }
   }
 
@@ -403,9 +405,9 @@ bool ParseQuantParamFromInfoByOrder(const OpKernelInfo& info,
     info.TryGetConstantInput(scale_zp_indexs.W_ZERO_POINT, &W_zero_point);
 
     if (W_zero_point == nullptr) {
-      quant_param_.W_zero_point_value = 0;
+      quant_param.W_zero_point_value = 0;
     } else {
-      quant_param_.W_zero_point_value = *(W_zero_point->template Data<uint8_t>());
+      quant_param.W_zero_point_value = *reinterpret_cast<const uint8_t*>(W_zero_point->DataRaw());
     }
   }
 
@@ -414,32 +416,32 @@ bool ParseQuantParamFromInfoByOrder(const OpKernelInfo& info,
     info.TryGetConstantInput(scale_zp_indexs.Y_ZERO_POINT, &Y_zero_point);
 
     if (Y_zero_point == nullptr) {
-      quant_param_.Y_zero_point_value = 0;
+      quant_param.Y_zero_point_value = 0;
     } else {
-      quant_param_.Y_zero_point_value = *(Y_zero_point->template Data<uint8_t>());
+      quant_param.Y_zero_point_value = *reinterpret_cast<const uint8_t*>(Y_zero_point->DataRaw());
     }
   }
 
   if (scale_zp_indexs.X_SCALE >= 0) {
     const onnxruntime::Tensor* X_scale = nullptr;
     info.TryGetConstantInput(scale_zp_indexs.X_SCALE, &X_scale);
-    quant_param_.X_scale_value = *(X_scale->template Data<float>());
+    quant_param.X_scale_value = *(X_scale->template Data<float>());
   }
 
   if (scale_zp_indexs.W_SCALE >= 0) {
     const onnxruntime::Tensor* W_scale = nullptr;
     info.TryGetConstantInput(scale_zp_indexs.W_SCALE, &W_scale);
-    quant_param_.W_scale_value = *(W_scale->template Data<float>());
+    quant_param.W_scale_value = *(W_scale->template Data<float>());
 
     if (!IsScalarOr1ElementVector(W_scale)) {
-      quant_param_.W_scale_tensor = W_scale;
+      quant_param.W_scale_tensor = W_scale;
     }
   }
 
   if (scale_zp_indexs.Y_SCALE >= 0) {
     const onnxruntime::Tensor* Y_scale = nullptr;
     info.TryGetConstantInput(scale_zp_indexs.Y_SCALE, &Y_scale);
-    quant_param_.Y_scale_value = *(Y_scale->template Data<float>());
+    quant_param.Y_scale_value = *(Y_scale->template Data<float>());
   }
   return true;
 }
