@@ -17,6 +17,10 @@ jobs:
         with:
           python-version: '3.8.x'
           architecture: 'x64'
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "10.0"
       - name: 'Setup TVM EP requirements'
         run: |
           python3 -m pip install -r ${{ github.workspace }}/tools/ci_build/github/linux/tvm/requirements.txt
