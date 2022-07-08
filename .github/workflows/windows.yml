@@ -24,6 +24,13 @@ jobs:
       - name: 'Test'
         run: |
           ls -r "C:\Program Files\LLVM"
+
+      - name: Set up Clang
+        uses: egor-tensin/setup-clang@v1
+        with:
+          version: latest
+          platform: x64
+
       - name: 'Setup TVM EP requirements'
         run: |
           python3 -m pip install -r ${{ github.workspace }}/tools/ci_build/github/linux/tvm/requirements.txt
