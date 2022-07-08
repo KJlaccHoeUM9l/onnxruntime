@@ -23,7 +23,7 @@ jobs:
           version: "12.0"
       - name: 'Test'
         run: |
-          ls "C:\Program Files\LLVM\bin"
+          ls -r "C:\Program Files\LLVM"
       - name: 'Setup TVM EP requirements'
         run: |
           python3 -m pip install -r ${{ github.workspace }}/tools/ci_build/github/linux/tvm/requirements.txt
