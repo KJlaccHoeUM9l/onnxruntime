@@ -23,10 +23,10 @@ jobs:
           version: "12.0"
       - name: 'Test'
         run: |
-          ls "C:\Program Files\LLVM"
+          ls "C:\Program Files\LLVM\bin"
       - name: 'Setup TVM EP requirements'
         run: |
           python3 -m pip install -r ${{ github.workspace }}/tools/ci_build/github/linux/tvm/requirements.txt
       - name: 'Build and Test'
         run: |
-          python3 ${{ github.workspace }}/tools/ci_build/build.py --build_dir build --config Release --skip_submodule_sync --parallel --enable_pybind --disable_contrib_ops --disable_ml_ops --skip_onnx_tests --use_tvm
+          python3 ${{ github.workspace }}/tools/ci_build/build.py --build_dir build --config Release --skip_submodule_sync --parallel --enable_pybind --disable_contrib_ops --disable_ml_ops --skip_onnx_tests --use_tvm --llvm_config "C:\Program Files\LLVM\bin\llvm-config.exe"
