@@ -29,9 +29,13 @@ jobs:
 #          version: latest
 #          platform: x64
 
-      - uses: bwoodsend/setup-winlibs-action@v1
-        with:
-          with_clang: true
+#      - uses: bwoodsend/setup-winlibs-action@v1
+#        with:
+#          with_clang: true
+
+      - name: "LLVM"
+        run: |
+          choco install llvm
 
       - name: 'Test'
         run: |
