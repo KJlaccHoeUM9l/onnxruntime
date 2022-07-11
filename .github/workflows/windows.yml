@@ -29,6 +29,10 @@ jobs:
 #          version: latest
 #          platform: x64
 
+      - uses: bwoodsend/setup-winlibs-action@v1
+        with:
+          with_clang: true
+
       - name: 'Test'
         run: |
           ls -r "C:\Program Files\LLVM"
