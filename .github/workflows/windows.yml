@@ -10,6 +10,8 @@ jobs:
   Onnxruntime-TVM:
     runs-on: windows-2019
     steps:
+      - name: Add LLVM-Dev to the PATH
+        run: echo "##[add-path]C:\Miniconda\Library\bin"
       - name: Check PATH
         run: |
           echo XXXXXXXX ${{github.path}}
