@@ -18,6 +18,18 @@ jobs:
           python-version: '3.8.x'
           architecture: 'x64'
 
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+#          auto-activate-base: true
+          activate-environment: ""
+
+      - name: Conda info
+        shell: pwsh
+        run: |
+          conda install llvmdev=12.0.0
+          conda info
+          conda list
+
 #      - name: Install LLVM and Clang
 #        uses: KyleMayes/install-llvm-action@v1
 #        with:
@@ -33,13 +45,14 @@ jobs:
 #        with:
 #          with_clang: true
 
-      - name: "LLVM"
-        run: |
-          choco install llvm --force
-
+#      - name: "LLVM"
+#        run: |
+#          choco install llvm --force
+#
       - name: 'Test'
         run: |
-          ls -r "C:\Program Files\LLVM"
+#          ls -r "C:\Program Files\LLVM"
+          ls -r "C:\Miniconda"
 
       - name: 'Setup TVM EP requirements'
         run: |
