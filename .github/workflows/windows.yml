@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Check PATH
         run: |
-          echo XXXXXXXX ${GITHUB_PATH}
+          echo XXXXXXXX ${{github.path}}
       - uses: actions/checkout@v3
         with:
           submodules: true
