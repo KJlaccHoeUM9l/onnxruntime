@@ -11,10 +11,11 @@ jobs:
     runs-on: windows-2019
     steps:
       - name: Add LLVM-Dev to the PATH
-        run: echo "::add-path::C:\Miniconda\Library\bin"
+        run: |
+          echo "C:/Miniconda/Library/bin" >> $GITHUB_PATH
       - name: Check PATH
         run: |
-          echo XXXXXXXX ${{github.path}}
+          echo XXXXXXXX $GITHUB_PATH
       - uses: actions/checkout@v3
         with:
           submodules: true
@@ -36,4 +37,5 @@ jobs:
           python3 -m pip install -r ${{ github.workspace }}/tools/ci_build/github/linux/tvm/requirements.txt
       - name: 'Build and Test'
         run: |
-          python3 ${{ github.workspace }}/tools/ci_build/build.py --build_dir build --config Release --skip_submodule_sync --parallel --enable_pybind --disable_contrib_ops --disable_ml_ops --skip_onnx_tests --use_tvm --llvm_config "C:/Miniconda/Library/bin/llvm-config.exe"
+          python3 ${{ github.workspace }}/tools/ci_build/build.py --build_dir build --config Release --skip_submodule_sync --parallel --enable_pybind --disable_contrib_ops --disable_ml_ops --skip_onnx_tests --use_tvm
+#          python3 ${{ github.workspace }}/tools/ci_build/build.py --build_dir build --config Release --skip_submodule_sync --parallel --enable_pybind --disable_contrib_ops --disable_ml_ops --skip_onnx_tests --use_tvm --llvm_config "C:/Miniconda/Library/bin/llvm-config.exe"
