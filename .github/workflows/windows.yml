@@ -20,7 +20,6 @@ jobs:
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
-#          auto-activate-base: true
           activate-environment: ""
 
       - name: Conda info
@@ -51,7 +50,6 @@ jobs:
 #
       - name: 'Test'
         run: |
-#          ls -r "C:\Program Files\LLVM"
           ls -r "C:\Miniconda"
 
       - name: 'Setup TVM EP requirements'
